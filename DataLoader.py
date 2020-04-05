@@ -30,7 +30,7 @@ def getAllMetaData():
     """
     Loads all the metadata from metadata.csv.
 
-    :return:
+    :return: A list of all the json files and a dataframe with all the metadata.
     """
     root_path = "data"
     metadata_path = f'{root_path}/metadata.csv'
@@ -60,8 +60,8 @@ def get_breaks(content, length):
 def getDataFrame(all_json, meta_df):
     """
     :param all_json: A list of all the JSON files files
-    :param meta_df: Dataframe of
-    :return:
+    :param meta_df: Dataframe of all the metadata from the JSON files.
+    :return: Data frame of all the covid data.
     """
     dict_ = {'paper_id': [], 'abstract': [], 'body_text': [], 'authors': [], 'title': [], 'journal': [],
              'abstract_summary': []}
@@ -123,7 +123,6 @@ def getDataFrame(all_json, meta_df):
 
     df_covid = pd.DataFrame(dict_, columns=['paper_id', 'abstract', 'body_text', 'authors', 'title', 'journal',
                                             'abstract_summary'])
-    print(df_covid.head())
     return df_covid
 
 

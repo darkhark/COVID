@@ -12,7 +12,6 @@ def dropNulls(df_covid):
     :return: Data frame without any null values.
     """
     df_covid.dropna(inplace=True)
-    print(df_covid['abstract'].describe(include='all'))
     return df_covid
 
 
@@ -24,7 +23,6 @@ def removeDuplicates(df_covid):
     :return: Dataframe without duplicate bodies or abstracts.
     """
     df_covid.drop_duplicates(['abstract', 'body_text'], inplace=True)
-    print(df_covid['abstract'].describe(include='all'))
     return df_covid
 
 
@@ -66,7 +64,13 @@ def toLowercase(input_str):
 
 
 def runDataCleanser(df_covid):
+    """
+    Cleans the data removing duplicates, nulls, and punctuations.
+    It then converts all strings to lowercase.
+
+    :param df_covid: All the data.
+    :return: A cleaner dataframe.
+    """
     df = removeDuplicates(df_covid)
     df = removePunctuation(df)
     return convertDataToLowercase(df)
-
