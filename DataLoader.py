@@ -1,5 +1,4 @@
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import pandas as pd
 import glob
 import json
 
@@ -33,11 +32,9 @@ def getAllMetaData():
 
     :return:
     """
-    pd.set_option('display.max_columns', 2)
     root_path = "data"
     metadata_path = f'{root_path}/metadata.csv'
-    meta_df = pd.read_csv(metadata_path, dtype=str)
-    print(meta_df.head())
+    meta_df = pd.read_csv(metadata_path, dtype=object)
 
     all_json = glob.glob(f'{root_path}/**/*.json', recursive=True)
     print("Number of JSON files", len(all_json))
@@ -61,6 +58,11 @@ def get_breaks(content, length):
 
 
 def getDataFrame(all_json, meta_df):
+    """
+    :param all_json: A list of all the JSON files files
+    :param meta_df: Dataframe of
+    :return:
+    """
     dict_ = {'paper_id': [], 'abstract': [], 'body_text': [], 'authors': [], 'title': [], 'journal': [],
              'abstract_summary': []}
     for idx, entry in enumerate(all_json):
@@ -125,5 +127,6 @@ def getDataFrame(all_json, meta_df):
     return df_covid
 
 
-all_json, metadata = getAllMetaData()
-getDataFrame(all_json, metadata)
+def runDataLoader():
+    all_json, metadata = getAllMetaData()
+    return getDataFrame(all_json, metadata)
