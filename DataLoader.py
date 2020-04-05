@@ -16,7 +16,7 @@ class FileReader:
                     self.abstract.append(entry['text'])
                 # Body text
             else:
-                content['abstract'] = None
+                content['abstract'] = 'No abstract provided'
             for entry in content['body_text']:
                 self.body_text.append(entry['text'])
             self.abstract = '\n'.join(self.abstract)
