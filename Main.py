@@ -1,6 +1,6 @@
-from DataCleanser import runDataCleanser
-from DataLoader import runDataLoader
-from WordCounter import addAbstractAndBodyWordCountColumn
+from preprocessing.DataCleanser import runDataCleanser
+from preprocessing.DataLoader import runDataLoader
+from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 
 covidDF = runDataLoader()
 print("\n---------Abstract after initial load-------------\n")
