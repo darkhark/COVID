@@ -1,4 +1,5 @@
 import re
+import numpy as np
 
 
 def dropNulls(df_covid):
@@ -12,7 +13,6 @@ def dropNulls(df_covid):
     :param df_covid: Dataframe of covid data.
     :return: Data frame without any null values.
     """
-    df_covid['body_text'].replace("", np.nan, inplace=True)
     df_covid['body_text'].replace(r'^\s+$', np.nan, regex=True)
     df_covid.dropna(inplace=True)
     return df_covid
