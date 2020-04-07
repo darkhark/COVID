@@ -3,14 +3,17 @@ import re
 
 def dropNulls(df_covid):
     """
-    Removes any rows that contain a null value. We print out the abstract description here because we know there are
-    null value in there. We made the abstract a None type whenever no abstract was present in a JSON file.
+    Removes any rows that contain a null value. We currently create a string 'no abstract provided' if the abstract
+    is not present, so this method is to account for potential mishandled abstract entries.  For 'body_text'
+    entries that are empty strings, we convert them to NaN and then drop them.
 
     Should be completed before running other methods to reduce the number of rows examined.
 
     :param df_covid: Dataframe of covid data.
     :return: Data frame without any null values.
     """
+    nan_value = float("NaN")
+    df_covid['body_text'].replace("", nan_value, inplace=True)
     df_covid.dropna(inplace=True)
     return df_covid
 
@@ -71,6 +74,7 @@ def runDataCleanser(df_covid):
     :param df_covid: All the data.
     :return: A cleaner dataframe.
     """
-    df = removeDuplicates(df_covid)
+    df = dropNulls(df_covid)
+    df = removeDuplicates(df)
     df = removePunctuation(df)
     return convertDataToLowercase(df)
