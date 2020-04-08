@@ -13,6 +13,7 @@ def dropNulls(df_covid):
     :param df_covid: Dataframe of covid data.
     :return: Data frame without any null values.
     """
+    df_covid['abstract'].replace('', 'no abstract provided', inplace=True)
     df_covid['abstract'].replace(r'^\s+$', 'no abstract provided', inplace=True, regex=True)
     df_covid['body_text'].replace(r'^\s+$', np.nan, inplace=True, regex=True)
     df_covid.dropna(inplace=True)
