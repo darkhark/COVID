@@ -14,9 +14,10 @@ def dropNulls(df_covid):
     :return: Data frame without any null values.
     """
     df_covid['abstract'].replace('', 'no abstract provided', inplace=True)
-    df_covid['abstract'].replace(r'^\s+$', 'no abstract provided', inplace=True, regex=True)
-    df_covid['body_text'].replace(r'^\s+$', np.nan, inplace=True, regex=True)
-    df_covid.dropna(inplace=True)
+    df_covid['body_text'].replace('', np.nan, inplace=True)
+    df_covid.dropna(subset=['body_text', 'authors'], inplace=True)
+    print("\nDrop Nulls\n")
+    print(df_covid["body_text"])
     return df_covid
 
 
@@ -28,6 +29,8 @@ def removeDuplicates(df_covid):
     :return: Dataframe without duplicate bodies or abstracts.
     """
     df_covid.drop_duplicates(['abstract', 'body_text'], inplace=True)
+    print("\nDrop Duplicates\n")
+    print(df_covid["body_text"])
     return df_covid
 
 
@@ -41,6 +44,8 @@ def removePunctuation(df_covid):
     """
     df_covid['body_text'] = df_covid['body_text'].apply(lambda x: re.sub('[^a-zA-z0-9\s]', '', x))
     df_covid['abstract'] = df_covid['abstract'].apply(lambda x: re.sub('[^a-zA-z0-9\s]', '', x))
+    print("\nDrop Punctuation\n")
+    print(df_covid["body_text"])
     return df_covid
 
 
@@ -54,6 +59,8 @@ def convertDataToLowercase(df_covid):
     """
     df_covid['body_text'] = df_covid['body_text'].apply(lambda x: toLowercase(x))
     df_covid['abstract'] = df_covid['abstract'].apply(lambda x: toLowercase(x))
+    print("\nReplace case\n")
+    print(df_covid["body_text"])
     return df_covid
 
 
