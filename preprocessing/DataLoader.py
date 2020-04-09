@@ -13,7 +13,7 @@ class FileReader:
             # Abstract
             if "abstract" in content:
                 for entry in content['abstract']:
-                    self.abstract.append(entry['text'])
+                    self.abstract.append(str(entry['text']).strip())
                 # Body text
             else:
                 content['abstract'] = 'no abstract provided'
@@ -26,7 +26,7 @@ class FileReader:
         return f'{self.paper_id}: {self.abstract[:200]}... {self.body_text[:200]}...'
 
 
-def getAllMetaData():
+def getAllData():
     """
     Loads all the metadata from metadata.csv.
 
@@ -127,5 +127,10 @@ def getDataFrame(all_json, meta_df):
 
 
 def runDataLoader():
-    all_json, metadata = getAllMetaData()
+    all_json, metadata = getAllData()
     return getDataFrame(all_json, metadata)
+
+
+def runQuickLoader():
+    all_json, metadata = getAllData()
+    return getDataFrame(all_json[:1000], metadata)
