@@ -1,8 +1,6 @@
-import nltk
 from nltk.corpus import stopwords
-nltk.download('punkt')
-nltk.download('stopwords')
-from nltk.tokenize import word_tokenize
+
+#nltk.download('stopwords')  //Uncomment if need to download
 
 import re
 import numpy as np
@@ -20,7 +18,7 @@ def handleEmptyData(df_covid):
     """
     for col in df_covid.columns:
         if col == 'abstract':
-            df_covid['abstract'].replace('', 'Abstract Missing', inplace=True)
+            df_covid['abstract'].replace('', 'abstract missing', inplace=True)
         else:
             df_covid[col].replace('', np.nan, inplace=True)
     df_covid.dropna(subset=['body_text', 'authors'], inplace=True)
@@ -65,7 +63,6 @@ def removeStoppingWords(df_covid):
     """
     stop = stopwords.words('english')
     pat = r'\b(?:{})\b'.format('|'.join(stop))
-    #print(pat)
     df_covid['body_text'] = df_covid['body_text'].apply(lambda x: re.sub(pat, '', x))
     df_covid['abstract'] = df_covid['abstract'].apply(lambda x: re.sub(pat, '', x))
     print('\nRemove Stopping Words\n')
