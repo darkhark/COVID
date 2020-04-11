@@ -20,7 +20,7 @@ def handleEmptyData(df_covid):
     """
     for col in df_covid.columns:
         if col == 'abstract':
-            df_covid['abstract'].replace('', 'no abstract provided', inplace=True)
+            df_covid['abstract'].replace('', 'Abstract Missing', inplace=True)
         else:
             df_covid[col].replace('', np.nan, inplace=True)
     df_covid.dropna(subset=['body_text', 'authors'], inplace=True)
@@ -64,11 +64,12 @@ def removeStoppingWords(df_covid):
     :return: A dataframe with all stopping words removed from body and abstract
     """
     stop = stopwords.words('english')
-    #stop = stop.append('in')
-    #print(stop)
     pat = r'\b(?:{})\b'.format('|'.join(stop))
-    print(pat)
+    #print(pat)
     df_covid['body_text'] = df_covid['body_text'].apply(lambda x: re.sub(pat, '', x))
+    df_covid['abstract'] = df_covid['abstract'].apply(lambda x: re.sub(pat, '', x))
+    print('\nRemove Stopping Words\n')
+    print(df_covid['body_text'])
     return df_covid
 
 def convertDataToLowercase(df_covid):
@@ -108,5 +109,5 @@ def runDataCleanser(df_covid):
     df = handleEmptyData(df_covid)
     df = removeDuplicates(df)
     df = removePunctuation(df)
-    df = removeStoppingWords(df)
-    return convertDataToLowercase(df)
+    df = convertDataToLowercase(df)
+    return removeStoppingWords(df)
