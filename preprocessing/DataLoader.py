@@ -133,4 +133,4 @@ def runDataLoader():
 
 def runQuickLoader():
     all_json, metadata = getAllData()
-    return getDataFrame(all_json[:1000], metadata)
+    return getDataFrame(all_json[:100], metadata)

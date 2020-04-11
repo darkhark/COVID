@@ -1,5 +1,12 @@
+import nltk
+from nltk.corpus import stopwords
+nltk.download('punkt')
+nltk.download('stopwords')
+from nltk.tokenize import word_tokenize
+
 import re
 import numpy as np
+
 
 
 def dropNulls(df_covid):
@@ -48,6 +55,20 @@ def removePunctuation(df_covid):
     print(df_covid["body_text"])
     return df_covid
 
+def removeStoppingWords(df_covid):
+    """
+    Removes stopping words from strings
+    
+    :param df_covid: All the data loaded in
+    :return: A dataframe with all stopping words removed from body and abstract
+    """
+    stop = stopwords.words('english')
+    #stop = stop.append('in')
+    #print(stop)
+    pat = r'\b(?:{})\b'.format('|'.join(stop))
+    print(pat)
+    df_covid['body_text'] = df_covid['body_text'].apply(lambda x: re.sub(pat, '', x))
+    return df_covid
 
 def convertDataToLowercase(df_covid):
     """
@@ -86,4 +107,5 @@ def runDataCleanser(df_covid):
     df = dropNulls(df_covid)
     df = removeDuplicates(df)
     df = removePunctuation(df)
+    df = removeStoppingWords(df)
     return convertDataToLowercase(df)
