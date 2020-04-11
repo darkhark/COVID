@@ -1,20 +1,26 @@
+from nltk.corpus import stopwords
+
+#nltk.download('stopwords')  //Uncomment if need to download
+
 import re
 import numpy as np
 
-
-def dropNulls(df_covid):
+def handleEmptyData(df_covid):
     """
     Removes any rows that contain a null value. We currently create a string 'no abstract provided' if the abstract
-    is not present, so this method is to account for potential mishandled abstract entries.  For 'body_text'
-    entries that are empty strings, we convert them to NaN and then drop them.
+    is not present, so this method is to account for potential mishandled abstract entries.  For all other columns
+    we convert empty strings to NaN, but only drop rows that do not have either a body or author
 
     Should be completed before running other methods to reduce the number of rows examined.
 
     :param df_covid: Dataframe of covid data.
     :return: Data frame without any null values.
     """
-    df_covid['abstract'].replace('', 'no abstract provided', inplace=True)
-    df_covid['body_text'].replace('', np.nan, inplace=True)
+    for col in df_covid.columns:
+        if col == 'abstract':
+            df_covid['abstract'].replace('', 'abstract missing', inplace=True)
+        else:
+            df_covid[col].replace('', np.nan, inplace=True)
     df_covid.dropna(subset=['body_text', 'authors'], inplace=True)
     print("\nDrop Nulls\n")
     print(df_covid["body_text"])
@@ -48,6 +54,20 @@ def removePunctuation(df_covid):
     print(df_covid["body_text"])
     return df_covid
 
+def removeStoppingWords(df_covid):
+    """
+    Removes stopping words from strings
+    
+    :param df_covid: All the data loaded in
+    :return: A dataframe with all stopping words removed from body and abstract
+    """
+    stop = stopwords.words('english')
+    pat = r'\b(?:{})\b'.format('|'.join(stop))
+    df_covid['body_text'] = df_covid['body_text'].apply(lambda x: re.sub(pat, '', x))
+    df_covid['abstract'] = df_covid['abstract'].apply(lambda x: re.sub(pat, '', x))
+    print('\nRemove Stopping Words\n')
+    print(df_covid['body_text'])
+    return df_covid
 
 def convertDataToLowercase(df_covid):
     """
@@ -83,7 +103,8 @@ def runDataCleanser(df_covid):
     :param df_covid: All the data.
     :return: A cleaner dataframe.
     """
-    df = dropNulls(df_covid)
+    df = handleEmptyData(df_covid)
     df = removeDuplicates(df)
     df = removePunctuation(df)
-    return convertDataToLowercase(df)
+    df = convertDataToLowercase(df)
+    return removeStoppingWords(df)
