@@ -10,8 +10,11 @@ class FileReader:
             self.paper_id = content['paper_id']
             self.abstract = []
             self.body_text = []
-            for entry in content['abstract']:
-                self.abstract.append(entry['text'])
+            if "abstract" in content:
+                for entry in content['abstract']:
+                    self.abstract.append(entry['text'])
+            else:
+                content['abstract'] = ''
             for entry in content['body_text']:
                 self.body_text.append(entry['text'])
             self.abstract = '\n'.join(self.abstract)
