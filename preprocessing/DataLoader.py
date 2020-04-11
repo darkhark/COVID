@@ -10,13 +10,8 @@ class FileReader:
             self.paper_id = content['paper_id']
             self.abstract = []
             self.body_text = []
-            # Abstract
-            if "abstract" in content:
-                for entry in content['abstract']:
-                    self.abstract.append(str(entry['text']).strip())
-                # Body text
-            else:
-                content['abstract'] = 'no abstract provided'
+            for entry in content['abstract']:
+                self.abstract.append(entry['text'])
             for entry in content['body_text']:
                 self.body_text.append(entry['text'])
             self.abstract = '\n'.join(self.abstract)
@@ -76,9 +71,9 @@ def getDataFrame(all_json, meta_df):
         if len(meta_data) == 0:
             continue
 
-        dict_['paper_id'].append(content.paper_id)
-        dict_['abstract'].append(content.abstract)
-        dict_['body_text'].append(content.body_text)
+        dict_['paper_id'].append(str(content.paper_id).strip())
+        dict_['abstract'].append(str(content.abstract).strip())
+        dict_['body_text'].append(str(content.body_text).strip())
 
         # also create a column for the summary of abstract to be used in a plot
         if len(content.abstract) == 0:
@@ -102,24 +97,24 @@ def getDataFrame(all_json, meta_df):
             authors = meta_data['authors'].values[0].split(';')
             if len(authors) > 2:
                 # more than 2 authors, may be problem when plotting, so take first 2 append with ...
-                dict_['authors'].append(". ".join(authors[:2]) + "...")
+                dict_['authors'].append(str(". ".join(authors[:2]) + "...").strip())
             else:
                 # authors will fit in plot
-                dict_['authors'].append(". ".join(authors))
+                dict_['authors'].append(str(". ".join(authors)).strip())
         except Exception as e:
             # if only one author - or Null valie
-            dict_['authors'].append(meta_data['authors'].values[0])
+            dict_['authors'].append(str(meta_data['authors'].values[0]).strip())
 
         # add the title information, add breaks when needed
         try:
             title = get_breaks(meta_data['title'].values[0], 40)
-            dict_['title'].append(title)
+            dict_['title'].append(str(title).strip())
         # if title was not provided
         except Exception as e:
-            dict_['title'].append(meta_data['title'].values[0])
+            dict_['title'].append(str(meta_data['title'].values[0]).strip())
 
         # add the journal information
-        dict_['journal'].append(meta_data['journal'].values[0])
+        dict_['journal'].append(str(meta_data['journal'].values[0]).strip())
 
     df_covid = pd.DataFrame(dict_, columns=['paper_id', 'abstract', 'body_text', 'authors', 'title', 'journal',
                                             'abstract_summary'])
