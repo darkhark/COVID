@@ -129,6 +129,6 @@ def runDataLoader():
     return getDataFrame(all_json, metadata)
 
 
-def runQuickLoader():
+def runQuickLoader(numFilesToLoad):
     all_json, metadata = getAllData()
-    return getDataFrame(all_json[:1000], metadata)
+    return getDataFrame(all_json[:numFilesToLoad], metadata)

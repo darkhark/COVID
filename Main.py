@@ -7,16 +7,16 @@ from preprocessing.DataLoader import runDataLoader, runQuickLoader
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 
 
-#covidDF = runDataLoader()
-covidDF = runQuickLoader()
+covidDF = runDataLoader()
+# covidDF = runQuickLoader(1000)
 print("\n---------Body After Initial Load-------------\n")
 print(covidDF["body_text"])
 covidDF = runDataCleanser(covidDF)
-print("\n---------Abstract After Cleansing-------------\n")
+print("\n---------Body After Cleansing-------------\n")
 print(covidDF["body_text"])
 
 print("\n----------Starting Feature Selection---------\n")
-matrix = getHashVectorizationMatrix(runNGrams(covidDF, 2))
+matrix = getHashVectorizationMatrix(runNGrams(covidDF, 2, "body_text"))
 X_train, X_test = trainTestSplit(matrix)
 
 covidDF = addAbstractAndBodyWordCountColumn(covidDF)
@@ -29,5 +29,5 @@ print(covidDF["body_word_count"])
 print("X_train size:", len(X_train[0]))
 print("X_test size:", len(X_test[0]), "\n")
 
-X_embedded = reduceDimensionality(X_train[0])
+X_embedded = reduceDimensionality(X_train[0], 25)
 plotWithoutClusterSns(X_embedded)
