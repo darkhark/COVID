@@ -5,6 +5,7 @@ from nltk.corpus import stopwords
 import re
 import numpy as np
 
+
 def handleEmptyData(df_covid):
     """
     Removes any rows that contain a null value. We currently create a string 'no abstract provided' if the abstract
@@ -54,6 +55,7 @@ def removePunctuation(df_covid):
     print(df_covid["body_text"])
     return df_covid
 
+
 def removeStoppingWords(df_covid):
     """
     Removes stopping words from strings
@@ -68,6 +70,7 @@ def removeStoppingWords(df_covid):
     print('\nRemove Stopping Words\n')
     print(df_covid['body_text'])
     return df_covid
+
 
 def convertDataToLowercase(df_covid):
     """

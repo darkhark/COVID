@@ -15,9 +15,12 @@ def splitWordsIntoColumns(dataframe):
                            "journal", "abstract_summary"], axis=1)
     words = []
     for i in range(0, len(text)):
-        words.append(str(text.iloc[i]['body_text']).split(" "))
+        if i % (len(text) // 20) == 0:
+            print(f'Splitting words in journal: {i} of {len(text)}')
+        wordArray = str(text.iloc[i]['body_text']).split(" ")
+        words.append(wordArray)
     # for i in range(0, 5):
-    #     print(words[i][:10])
+        # print(words[i][:10])
     return words
 
 
@@ -36,13 +39,15 @@ def reduceToNGrams(wordsArray, n):
     :return: An array where each row is the ngrams for a body and each column is a different ngram.
     """
     allNGrams = []
-    for word in wordsArray:
+    for idx, word in enumerate(wordsArray):
         ngram = []
+        if idx % (len(wordsArray) // 20) == 0:
+            print(f'NGramming journal: {idx} of {len(wordsArray)}')
         for i in range(len(word) - n + 1):
             ngram.append("".join(word[i:i + n]))
         allNGrams.append(ngram)
-    for i in range(0, 5):
-        print(allNGrams[i][:10])
+    # for i in range(0, 5):
+        # print(allNGrams[i][:10])
     return allNGrams
 
 

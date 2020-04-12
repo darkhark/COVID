@@ -105,7 +105,7 @@ def getDataFrame(all_json, meta_df):
                 # authors will fit in plot
                 dict_['authors'].append(str(". ".join(authors)).strip())
         except Exception as e:
-            # if only one author - or Null valie
+            # if only one author - or Null value
             dict_['authors'].append(str(meta_data['authors'].values[0]).strip())
 
         # add the title information, add breaks when needed
