@@ -11,7 +11,7 @@ def splitWordsIntoColumns(dataframe):
     :return: A two dimensional array where each row is a body and each column is a different word of the body.
     """
 
-    text = dataframe.drop(["paper_id", "abstract", "abstract_word_count", "body_word_count", "authors", "title",
+    text = dataframe.drop(["paper_id", "abstract", "authors", "title",
                            "journal", "abstract_summary"], axis=1)
     words = []
     for i in range(0, len(text)):

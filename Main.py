@@ -7,8 +7,8 @@ from preprocessing.DataLoader import runDataLoader, runQuickLoader
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 
 
-covidDF = runDataLoader()
-# covidDF = runQuickLoader()
+#covidDF = runDataLoader()
+covidDF = runQuickLoader()
 print("\n---------Body After Initial Load-------------\n")
 print(covidDF["body_text"])
 covidDF = runDataCleanser(covidDF)
