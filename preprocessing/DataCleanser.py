@@ -5,6 +5,9 @@ from nltk.corpus import stopwords
 import re
 import numpy as np
 
+spaceCounter = 0
+numberOfLines = 0
+
 
 def handleEmptyData(df_covid):
     """
@@ -67,9 +70,17 @@ def removeStoppingWords(df_covid):
     pat = r'\b(?:{})\b'.format('|'.join(stop))
     df_covid['body_text'] = df_covid['body_text'].apply(lambda x: re.sub(pat, '', x))
     df_covid['abstract'] = df_covid['abstract'].apply(lambda x: re.sub(pat, '', x))
+    df_covid['body_text'] = df_covid['body_text'].apply(lambda x: replaceExcessiveSpacing(x))
+    df_covid['abstract'] = df_covid['abstract'].apply(lambda x: replaceExcessiveSpacing(x))
     print('\nRemove Stopping Words\n')
     print(df_covid['body_text'])
     return df_covid
+
+
+def replaceExcessiveSpacing(fullText):
+    while "  " in fullText:
+        fullText = fullText.replace("  ", " ")
+    return fullText
 
 
 def convertDataToLowercase(df_covid):
@@ -98,11 +109,12 @@ def toLowercase(input_str):
     return input_str
 
 
-def runDataCleanser(df_covid):
+def runDataCleanser(df_covid, saveToCSV=False):
     """
     Cleans the data removing duplicates, nulls, and punctuations.
     It then converts all strings to lowercase.
 
+    :param saveToCSV: If set to true, saved a csv of the cleansed dataframe.
     :param df_covid: All the data.
     :return: A cleaner dataframe.
     """
@@ -110,4 +122,8 @@ def runDataCleanser(df_covid):
     df = removeDuplicates(df)
     df = removePunctuation(df)
     df = convertDataToLowercase(df)
-    return removeStoppingWords(df)
+    df = removeStoppingWords(df)
+    if saveToCSV:
+        df.to_csv(path_or_buf="cleanedData/smallcleandData.csv", index=False)
+        print("Saved CSV to cleanedData/cleanedData.csv")
+    return df

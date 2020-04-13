@@ -124,7 +124,7 @@ def getDataFrame(all_json, meta_df):
     return df_covid
 
 
-def runDataLoader():
+def runFullDataLoader():
     all_json, metadata = getAllData()
     return getDataFrame(all_json, metadata)
 
@@ -132,3 +132,7 @@ def runDataLoader():
 def runQuickLoader(numFilesToLoad):
     all_json, metadata = getAllData()
     return getDataFrame(all_json[:numFilesToLoad], metadata)
+
+
+def runCleansedDataLoader():
+    return pd.read_csv("cleanedData/cleanedData.csv", dtype=str)
