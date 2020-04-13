@@ -3,18 +3,25 @@ from clustering.feature_selection.NGrams import runNGrams
 from clustering.feature_selection.Vectorization import getHashVectorizationMatrix, reduceDimensionality
 from plotters.seabornPlots import plotWithoutClusterSns
 from preprocessing.DataCleanser import runDataCleanser
-from preprocessing.DataLoader import runDataLoader, runQuickLoader
+from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 
 
-covidDF = runDataLoader()
-# covidDF = runQuickLoader(1000)
-print("\n---------Body After Initial Load-------------\n")
-print(covidDF["body_text"])
-covidDF = runDataCleanser(covidDF)
-print("\n---------Body After Cleansing-------------\n")
-print(covidDF["body_text"])
+def loadAndCleanInitialData():
+    df = runFullDataLoader()
+    print("\n---------Body After Initial Load-------------\n")
+    print(df["body_text"])
+    df = runDataCleanser(df)
+    print("\n---------Body After Cleansing-------------\n")
+    print(df["body_text"])
+    return df
 
+
+# loadAndCleanInitialData()
+# runQuickLoader(1000)
+covidDF = runCleansedDataLoader()
+# Equivalent of quick loader for loading the csv
+# covidDF = covidDF[:][:1000]
 print("\n----------Starting Feature Selection---------\n")
 matrix = getHashVectorizationMatrix(runNGrams(covidDF, 2, "body_text"))
 X_train, X_test = trainTestSplit(matrix)
