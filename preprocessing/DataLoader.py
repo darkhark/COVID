@@ -135,4 +135,5 @@ def runQuickLoader(numFilesToLoad):
 
 
 def runCleansedDataLoader():
-    return pd.read_csv("cleanedData/cleanedData.csv", dtype=str)
+    # Converter needed to keep objects from becoming floats
+    return pd.read_csv("cleanedData/cleanedData.csv", converters={i: str for i in range(0, 8)})
