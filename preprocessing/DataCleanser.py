@@ -5,9 +5,6 @@ from nltk.corpus import stopwords
 import re
 import numpy as np
 
-spaceCounter = 0
-numberOfLines = 0
-
 
 def handleEmptyData(df_covid):
     """
@@ -124,6 +121,6 @@ def runDataCleanser(df_covid, saveToCSV=False):
     df = convertDataToLowercase(df)
     df = removeStoppingWords(df)
     if saveToCSV:
-        df.to_csv(path_or_buf="cleanedData/smallcleandData.csv", index=False)
-        print("Saved CSV to cleanedData/cleanedData.csv")
+        df.to_csv(path_or_buf="cleanedData/cleanedData.csv", index=False)
+        print("Saved CSV to cleanedData/otherCleanedData.csv")
     return df

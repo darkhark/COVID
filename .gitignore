@@ -3,6 +3,7 @@
 
 data/**
 cleanedData/**
+plot_pictures/ngramsPlot.png
 
 # User-specific stuff
 .idea/**/workspace.xml
