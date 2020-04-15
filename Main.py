@@ -1,6 +1,7 @@
 from clustering.KMeans import trainTestSplit
 from clustering.feature_selection.NGrams import runNGrams
-from clustering.feature_selection.Vectorization import getHashVectorizationMatrix, reduceDimensionality
+from clustering.feature_selection.Vectorization import getHashVectorizationMatrix, reduceDimensionalityWithTSNE, \
+    reduceDimensionalityWithTF_IDF, reduceDimensionalityWithPCA
 from plotters.seabornPlots import plotWithoutClusterSns
 from preprocessing.DataCleanser import runDataCleanser
 from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader
@@ -17,24 +18,37 @@ def loadAndCleanInitialData():
     return df
 
 
+def appendBodyAndAbstractWordCounts(df):
+    df = addAbstractAndBodyWordCountColumn(df)
+    print("\n---------Counts-------------\n")
+    print("Abstract Word Count\n")
+    print(df["abstract_word_count"])
+    print("\nBody Word Count\n")
+    print(df["body_word_count"])
+
+
+def getTrainTestSplitWithTSNE(df):
+    matrix = getHashVectorizationMatrix(runNGrams(df, 2, "body_text"))
+    X_train, X_test = trainTestSplit(matrix)
+    print("X_train size:", len(X_train[0]))
+    print("X_test size:", len(X_test[0]), "\n")
+    X_embedded = reduceDimensionalityWithTSNE(X_train[0], 15)
+    plotWithoutClusterSns(X_embedded)
+    reduceDimensionalityWithTF_IDF(df)
+    return X_train, X_test
+
+
+def getTFidfPCAMatrix(df):
+    matrix = reduceDimensionalityWithTF_IDF(df)
+    return reduceDimensionalityWithPCA(matrix)
+
+
 # loadAndCleanInitialData()
 # runQuickLoader(1000)
 covidDF = runCleansedDataLoader()
 # Equivalent of quick loader for loading the csv
-# covidDF = covidDF[:][:1000]
+covidDF = covidDF[:][:1000]
 print("\n----------Starting Feature Selection---------\n")
-matrix = getHashVectorizationMatrix(runNGrams(covidDF, 2, "body_text"))
-X_train, X_test = trainTestSplit(matrix)
 
-covidDF = addAbstractAndBodyWordCountColumn(covidDF)
-print("\n---------Counts-------------\n")
-print("Abstract Word Count\n")
-print(covidDF["abstract_word_count"])
-print("\nBody Word Count\n")
-print(covidDF["body_word_count"])
-
-print("X_train size:", len(X_train[0]))
-print("X_test size:", len(X_test[0]), "\n")
-
-X_embedded = reduceDimensionality(X_train[0], 25)
-plotWithoutClusterSns(X_embedded)
+X = getTFidfPCAMatrix(covidDF)
+print(X.shape)
