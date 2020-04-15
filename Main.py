@@ -6,6 +6,8 @@ from preprocessing.DataCleanser import runDataCleanser
 from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 
+from preprocessing.DataCleanser import languageDetection
+
 
 def loadAndCleanInitialData():
     df = runFullDataLoader()
@@ -17,24 +19,25 @@ def loadAndCleanInitialData():
     return df
 
 
-# loadAndCleanInitialData()
-# runQuickLoader(1000)
+#loadAndCleanInitialData()
+#runQuickLoader(1000)
 covidDF = runCleansedDataLoader()
-# Equivalent of quick loader for loading the csv
-# covidDF = covidDF[:][:1000]
-print("\n----------Starting Feature Selection---------\n")
-matrix = getHashVectorizationMatrix(runNGrams(covidDF, 2, "body_text"))
-X_train, X_test = trainTestSplit(matrix)
+#Equivalent of quick loader for loading the csv
+#covidDF = covidDF[:][:5000]
+covidDF = languageDetection(covidDF)
+#print("\n----------Starting Feature Selection---------\n")
+#matrix = getHashVectorizationMatrix(runNGrams(covidDF, 2, "body_text"))
+#X_train, X_test = trainTestSplit(matrix)
 
-covidDF = addAbstractAndBodyWordCountColumn(covidDF)
-print("\n---------Counts-------------\n")
-print("Abstract Word Count\n")
-print(covidDF["abstract_word_count"])
-print("\nBody Word Count\n")
-print(covidDF["body_word_count"])
+#covidDF = addAbstractAndBodyWordCountColumn(covidDF)
+#print("\n---------Counts-------------\n")
+#print("Abstract Word Count\n")
+#print(covidDF["abstract_word_count"])
+#print("\nBody Word Count\n")
+#print(covidDF["body_word_count"])
 
-print("X_train size:", len(X_train[0]))
-print("X_test size:", len(X_test[0]), "\n")
+#print("X_train size:", len(X_train[0]))
+#print("X_test size:", len(X_test[0]), "\n")
 
-X_embedded = reduceDimensionality(X_train[0], 25)
-plotWithoutClusterSns(X_embedded)
+#X_embedded = reduceDimensionality(X_train[0], 25)
+#plotWithoutClusterSns(X_embedded)

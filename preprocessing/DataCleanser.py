@@ -1,4 +1,8 @@
 from nltk.corpus import stopwords
+from tqdm import tqdm
+from langdetect import detect
+from langdetect import DetectorFactory
+from pprint import pprint
 
 #nltk.download('stopwords')  //Uncomment if need to download
 
@@ -17,13 +21,17 @@ def handleEmptyData(df_covid):
     :param df_covid: Dataframe of covid data.
     :return: Data frame without any null values.
     """
+    i=0
     for col in df_covid.columns:
         if col == 'abstract':
             df_covid['abstract'].replace('', 'abstract missing', inplace=True)
+            i+=1
         else:
             df_covid[col].replace('', np.nan, inplace=True)
+            i+=1
     df_covid.dropna(subset=['body_text', 'authors'], inplace=True)
     print("\nDrop Nulls\n")
+    print("Empty Data handled:", i)
     print(df_covid["body_text"])
     return df_covid
 
@@ -105,6 +113,57 @@ def toLowercase(input_str):
     input_str = input_str.lower()
     return input_str
 
+def languageDetection(df_covid):
+    """
+    Detects the language of the research articles and currently separates
+    English-language articles to be used in further analysis
+
+    :param df_covid: dataframe containing all entries
+    :return: dataframe cleansed of non-english articles
+    """
+    DetectorFactory.seed = 0
+    languages = []
+
+    # go through each text
+    for i in tqdm(range(0,len(df_covid))):
+    # split by space into list, take the first x intex, join with space
+        text = df_covid.iloc[i]['body_text'].split(" ")
+        lang = "en"
+        
+        try:
+            if len(text) > 50:
+                lang = detect(" ".join(text[:50]))
+                
+            elif len(text) > 0:
+                lang = detect(" ".join(text[:len(text)]))
+                 # ught... beginning of the document was not in a good format
+        except Exception as e:
+            all_words = set(text)
+            try:
+                lang = detect(" ".join(all_words))
+                # what!! :( let's see if we can find any text in abstract...
+            except Exception as e:
+                try:
+                # let's try to label it through the abstract then
+                    lang = detect(df_covid.iloc[i]['abstract_summary'])
+                except Exception as e:
+                    lang = "unknown"
+                    pass
+    
+        # get the language    
+        languages.append(lang)
+        
+    languages_dict = {}
+    for lang in set(languages):
+        languages_dict[lang] = languages.count(lang)
+    
+    print("Total: {}\n".format(len(languages)))
+    pprint(languages_dict)
+    df_covid['languages'] = languages
+    df_covid=df_covid[df_covid['languages'] == 'en']
+    df_covid.info()
+    
+    return df_covid
 
 def runDataCleanser(df_covid, saveToCSV=False):
     """
@@ -115,7 +174,8 @@ def runDataCleanser(df_covid, saveToCSV=False):
     :param df_covid: All the data.
     :return: A cleaner dataframe.
     """
-    df = handleEmptyData(df_covid)
+    df = languageDetection(df_covid)
+    df = handleEmptyData(df)
     df = removeDuplicates(df)
     df = removePunctuation(df)
     df = convertDataToLowercase(df)
