@@ -7,9 +7,6 @@ from preprocessing.DataCleanser import runDataCleanser
 from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 
-from preprocessing.DataCleanser import languageDetection
-
-
 def loadAndCleanInitialData():
     df = runFullDataLoader()
     print("\n---------Body After Initial Load-------------\n")

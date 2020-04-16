@@ -21,17 +21,13 @@ def handleEmptyData(df_covid):
     :param df_covid: Dataframe of covid data.
     :return: Data frame without any null values.
     """
-    i=0
     for col in df_covid.columns:
         if col == 'abstract':
             df_covid['abstract'].replace('', 'abstract missing', inplace=True)
-            i+=1
         else:
             df_covid[col].replace('', np.nan, inplace=True)
-            i+=1
     df_covid.dropna(subset=['body_text', 'authors'], inplace=True)
     print("\nDrop Nulls\n")
-    print("Empty Data handled:", i)
     print(df_covid["body_text"])
     return df_covid
 
