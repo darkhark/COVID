@@ -1,4 +1,7 @@
 from nltk.corpus import stopwords
+from tqdm import tqdm
+from langdetect import detect, DetectorFactory
+from pprint import pprint
 
 #nltk.download('stopwords')  //Uncomment if need to download
 
@@ -106,6 +109,54 @@ def toLowercase(input_str):
     return input_str
 
 
+def languageDetection(df_covid):
+    """
+    Detects the language of the research articles and currently separates
+    English-language articles to be used in further analysis
+
+    :param df_covid: dataframe containing all entries
+    :return: dataframe cleansed of non-english articles
+    """
+    DetectorFactory.seed = 0
+    languages = []
+
+    # go through every article
+    for i in tqdm(range(0,len(df_covid))):
+        text = df_covid.iloc[i]['body_text'].split(" ")
+        lang = "en"
+        
+        try:
+            if len(text) > 50:
+                lang = detect(" ".join(text[:50]))
+                
+            elif len(text) > 0:
+                lang = detect(" ".join(text[:len(text)]))
+        except Exception as e:
+            all_words = set(text)
+            try:
+                lang = detect(" ".join(all_words))
+            except Exception as e:
+                try:
+                    lang = detect(df_covid.iloc[i]['abstract_summary'])
+                except Exception as e:
+                    lang = "unknown"
+                    pass
+                
+            languages.append(lang)
+        
+    languages_dict = {}
+    for lang in set(languages):
+        languages_dict[lang] = languages.count(lang)
+    
+    print("Total: {}\n".format(len(languages)))
+    pprint(languages_dict)
+    df_covid['languages'] = languages
+    df_covid=df_covid[df_covid['languages'] == 'en']
+    df_covid.info()
+    
+    return df_covid
+
+
 def runDataCleanser(df_covid, saveToCSV=False):
     """
     Cleans the data removing duplicates, nulls, and punctuations.
@@ -115,7 +166,8 @@ def runDataCleanser(df_covid, saveToCSV=False):
     :param df_covid: All the data.
     :return: A cleaner dataframe.
     """
-    df = handleEmptyData(df_covid)
+    df = languageDetection(df_covid)
+    df = handleEmptyData(df)
     df = removeDuplicates(df)
     df = removePunctuation(df)
     df = convertDataToLowercase(df)
