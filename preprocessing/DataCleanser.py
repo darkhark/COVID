@@ -1,7 +1,6 @@
 from nltk.corpus import stopwords
 from tqdm import tqdm
-from langdetect import detect
-from langdetect import DetectorFactory
+from langdetect import detect, DetectorFactory
 from pprint import pprint
 
 #nltk.download('stopwords')  //Uncomment if need to download
@@ -109,6 +108,7 @@ def toLowercase(input_str):
     input_str = input_str.lower()
     return input_str
 
+
 def languageDetection(df_covid):
     """
     Detects the language of the research articles and currently separates
@@ -155,6 +155,7 @@ def languageDetection(df_covid):
     df_covid.info()
     
     return df_covid
+
 
 def runDataCleanser(df_covid, saveToCSV=False):
     """

@@ -7,6 +7,7 @@ from preprocessing.DataCleanser import runDataCleanser
 from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 
+
 def loadAndCleanInitialData():
     df = runFullDataLoader()
     print("\n---------Body After Initial Load-------------\n")
@@ -15,6 +16,7 @@ def loadAndCleanInitialData():
     print("\n---------Body After Cleansing-------------\n")
     print(df["body_text"])
     return df
+
 
 def appendBodyAndAbstractWordCounts(df):
     df = addAbstractAndBodyWordCountColumn(df)
