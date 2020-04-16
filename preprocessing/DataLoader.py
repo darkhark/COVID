@@ -135,5 +135,6 @@ def runQuickLoader(numFilesToLoad):
 
 
 def runCleansedDataLoader():
+    print("Reading in cleansed CSV...")
     # Converter needed to keep objects from becoming floats
     return pd.read_csv("cleanedData/cleanedData.csv", converters={i: str for i in range(0, 8)})

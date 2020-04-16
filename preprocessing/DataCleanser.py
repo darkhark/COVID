@@ -124,9 +124,8 @@ def languageDetection(df_covid):
     DetectorFactory.seed = 0
     languages = []
 
-    # go through each text
+    # go through every article
     for i in tqdm(range(0,len(df_covid))):
-    # split by space into list, take the first x intex, join with space
         text = df_covid.iloc[i]['body_text'].split(" ")
         lang = "en"
         
@@ -136,22 +135,18 @@ def languageDetection(df_covid):
                 
             elif len(text) > 0:
                 lang = detect(" ".join(text[:len(text)]))
-                 # ught... beginning of the document was not in a good format
         except Exception as e:
             all_words = set(text)
             try:
                 lang = detect(" ".join(all_words))
-                # what!! :( let's see if we can find any text in abstract...
             except Exception as e:
                 try:
-                # let's try to label it through the abstract then
                     lang = detect(df_covid.iloc[i]['abstract_summary'])
                 except Exception as e:
                     lang = "unknown"
                     pass
-    
-        # get the language    
-        languages.append(lang)
+                
+            languages.append(lang)
         
     languages_dict = {}
     for lang in set(languages):
