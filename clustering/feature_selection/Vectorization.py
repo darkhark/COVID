@@ -28,7 +28,7 @@ def reduceDimensionalityWithTSNE(X_set, neighbors):
     print("Reducing dimensionality using TSNE...")
     # t-distributed Stochastic Neighbor Embedding
     # -1 n_jobs means use all the processors to try and increase speed
-    tsne = TSNE(verbose=1, perplexity=neighbors, n_jobs=-1)
+    tsne = TSNE(verbose=1, perplexity=neighbors, n_jobs=-1, random_state=42)
     return tsne.fit_transform(X_set)
 
 
