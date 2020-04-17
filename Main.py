@@ -33,7 +33,7 @@ def getTrainTestSplitWithTSNE(df):
     print("X_train size:", len(X_train[0]))
     print("X_test size:", len(X_test[0]), "\n")
     X_embedded = reduceDimensionalityWithTSNE(X_train[0], 15)
-    plotWithoutClusterSns(X_embedded)
+    plotWithoutClusterSns(X_embedded, "plot_pictures/ngramsPlot.png")
     return X_train, X_test
 
 
@@ -55,7 +55,11 @@ covidDF = runCleansedDataLoader()
 print("\n----------Starting Feature Selection---------\n")
 
 X = getTFidfToTNSEMatrix(covidDF)
-plotWithoutClusterSns(X)
-print(X.shape)
+plotWithoutClusterSns(X, "plot_pictures/tsnePlot.png")
+findOptimalKUsingSilhouette(X)
+findOptimalKUsingElbow(X)
+
+X = getTFidfPCAMatrix(covidDF)
+plotWithoutClusterSns(X, "plot_pictures/pcaPlot.png")
 findOptimalKUsingSilhouette(X)
 findOptimalKUsingElbow(X)
