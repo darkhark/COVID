@@ -1,4 +1,4 @@
-from clustering.KMeans import trainTestSplit
+from clustering.KMeans import trainTestSplit, findOptimalKUsingElbow, findOptimalKUsingSilhouette
 from clustering.feature_selection.NGrams import runNGrams
 from clustering.feature_selection.Vectorization import getHashVectorizationMatrix, reduceDimensionalityWithTSNE, \
     reduceDimensionalityWithTF_IDF, reduceDimensionalityWithPCA
@@ -47,7 +47,7 @@ def getTFidfPCAMatrix(df):
     return reduceDimensionalityWithPCA(matrix)
 
 
-# loadAndCleanInitialData()
+# covidDF = loadAndCleanInitialData()
 # runQuickLoader(1000)
 covidDF = runCleansedDataLoader()
 # Equivalent of quick loader for loading the csv
@@ -57,3 +57,5 @@ print("\n----------Starting Feature Selection---------\n")
 X = getTFidfToTNSEMatrix(covidDF)
 plotWithoutClusterSns(X)
 print(X.shape)
+findOptimalKUsingSilhouette(X)
+findOptimalKUsingElbow(X)
