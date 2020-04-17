@@ -66,6 +66,7 @@ def removeStoppingWords(df_covid):
     :param df_covid: All the data loaded in
     :return: A dataframe with all stopping words removed from body and abstract
     """
+    print("Removing stopping words...")
     stop = stopwords.words('english')
     pat = r'\b(?:{})\b'.format('|'.join(stop))
     df_covid['body_text'] = df_covid['body_text'].apply(lambda x: re.sub(pat, '', x))
@@ -121,7 +122,7 @@ def languageDetection(df_covid):
     languages = []
 
     # go through every article
-    for i in tqdm(range(0,len(df_covid))):
+    for i in tqdm(range(0, len(df_covid))):
         text = df_covid.iloc[i]['body_text'].split(" ")
         lang = "en"
         
@@ -141,8 +142,7 @@ def languageDetection(df_covid):
                 except Exception as e:
                     lang = "unknown"
                     pass
-                
-            languages.append(lang)
+        languages.append(lang)
         
     languages_dict = {}
     for lang in set(languages):
@@ -151,8 +151,7 @@ def languageDetection(df_covid):
     print("Total: {}\n".format(len(languages)))
     pprint(languages_dict)
     df_covid['languages'] = languages
-    df_covid=df_covid[df_covid['languages'] == 'en']
-    df_covid.info()
+    df_covid = df_covid[df_covid['languages'] == 'en'].copy()
     
     return df_covid
 
@@ -173,6 +172,6 @@ def runDataCleanser(df_covid, saveToCSV=False):
     df = convertDataToLowercase(df)
     df = removeStoppingWords(df)
     if saveToCSV:
-        df.to_csv(path_or_buf="cleanedData/cleanedData.csv", index=False)
-        print("Saved CSV to cleanedData/otherCleanedData.csv")
+        df.to_csv(path_or_buf="cleanedData/cleanedEnglishData.csv", index=False)
+        print("Saved CSV to cleanedData/cleanedEnglishData.csv")
     return df

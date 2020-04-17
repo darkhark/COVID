@@ -1,4 +1,10 @@
+from scipy.spatial.distance import cdist
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 from sklearn.model_selection import train_test_split, KFold
+import numpy as np
+from tqdm import tqdm
+from plotters.matPlotLibPlots import plotElbowForKmeans, plotSilhouetteScores
 
 
 def trainTestSplit(matrix, method="single", splits=3):
@@ -16,5 +22,26 @@ def trainTestSplit(matrix, method="single", splits=3):
     return X_Trains, X_Tests
 
 
+def findOptimalKUsingElbow(X):
+    distortions = []
+    kMax = 50
+    kRange = range(2, kMax + 1)
+    print("Plotting distortions for optimal K...")
+    for k in tqdm(kRange):
+        k_means = KMeans(n_clusters=k, random_state=42).fit(X)
+        k_means.fit(X)
+        distortions.append(sum(np.min(cdist(X, k_means.cluster_centers_, 'euclidean'), axis=1)) / X.shape[0])
+    plotElbowForKmeans(kRange, distortions)
 
 
+def findOptimalKUsingSilhouette(X):
+    sil = []
+    kMax = 50
+    kRange = range(2, kMax + 1)
+    print("Plotting silhouette scores for optimal K...")
+    # dissimilarity would not be defined for a single cluster, thus, minimum number of clusters should be 2
+    for k in tqdm(kRange):
+        kmeans = KMeans(n_clusters=k).fit(X)
+        labels = kmeans.labels_
+        sil.append(silhouette_score(X, labels, metric='euclidean'))
+    plotSilhouetteScores(kRange, sil)
