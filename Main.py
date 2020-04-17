@@ -34,8 +34,12 @@ def getTrainTestSplitWithTSNE(df):
     print("X_test size:", len(X_test[0]), "\n")
     X_embedded = reduceDimensionalityWithTSNE(X_train[0], 15)
     plotWithoutClusterSns(X_embedded)
-    reduceDimensionalityWithTF_IDF(df)
     return X_train, X_test
+
+
+def getTFidfToTNSEMatrix(df):
+    matrix = reduceDimensionalityWithTF_IDF(df)
+    return reduceDimensionalityWithTSNE(matrix, 3)
 
 
 def getTFidfPCAMatrix(df):
@@ -47,8 +51,9 @@ def getTFidfPCAMatrix(df):
 # runQuickLoader(1000)
 covidDF = runCleansedDataLoader()
 # Equivalent of quick loader for loading the csv
-covidDF = covidDF[:][:1000]
+# covidDF = covidDF[:][:1000]
 print("\n----------Starting Feature Selection---------\n")
 
-X = getTFidfPCAMatrix(covidDF)
+X = getTFidfToTNSEMatrix(covidDF)
+plotWithoutClusterSns(X)
 print(X.shape)
