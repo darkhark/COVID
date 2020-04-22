@@ -43,7 +43,7 @@ def getTFidfToTNSEMatrix(df):
 
 
 def getTFidfPCAMatrix(df):
-    matrix = reduceDimensionalityWithTF_IDF(df)
+    matrix = reduceDimensionalityWithTF_IDF(df, calculateMaxFeatures=False)
     return reduceDimensionalityWithPCA(matrix)
 
 
@@ -56,11 +56,11 @@ print("\n----------Starting Feature Selection---------\n")
 
 X = getTFidfToTNSEMatrix(covidDF)
 plotWithoutClusterSns(X, "plot_pictures/tsnePlot.png")
-findOptimalKUsingSilhouette(X)
-findOptimalKUsingElbow(X)
+findOptimalKUsingSilhouette(X, "TSNE")
+findOptimalKUsingElbow(X, "TSNE")
 
 X = getTFidfPCAMatrix(covidDF)
 plotWithoutClusterSns(X, "plot_pictures/pcaPlot.png")
-findOptimalKUsingSilhouette(X)
-findOptimalKUsingElbow(X)
+findOptimalKUsingSilhouette(X, "PCA")
+findOptimalKUsingElbow(X, "PCA")
 
