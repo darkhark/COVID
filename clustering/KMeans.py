@@ -22,7 +22,7 @@ def trainTestSplit(matrix, method="single", splits=3):
     return X_Trains, X_Tests
 
 
-def findOptimalKUsingElbow(X):
+def findOptimalKUsingElbow(X, name):
     distortions = []
     kMax = 50
     kRange = range(2, kMax + 1)
@@ -31,10 +31,10 @@ def findOptimalKUsingElbow(X):
         k_means = KMeans(n_clusters=k, random_state=42).fit(X)
         k_means.fit(X)
         distortions.append(sum(np.min(cdist(X, k_means.cluster_centers_, 'euclidean'), axis=1)) / X.shape[0])
-    plotElbowForKmeans(kRange, distortions)
+    plotElbowForKmeans(kRange, distortions, name)
 
 
-def findOptimalKUsingSilhouette(X):
+def findOptimalKUsingSilhouette(X, name):
     sil = []
     kMax = 50
     kRange = range(2, kMax + 1)
@@ -44,4 +44,5 @@ def findOptimalKUsingSilhouette(X):
         kmeans = KMeans(n_clusters=k).fit(X)
         labels = kmeans.labels_
         sil.append(silhouette_score(X, labels, metric='euclidean'))
-    plotSilhouetteScores(kRange, sil)
+    plotSilhouetteScores(kRange, sil, name)
+
