@@ -11,7 +11,7 @@ def plotElbowForKmeans(kRange, distortions):
     plt.xlabel('k')
     plt.ylabel('Distortion')
     plt.title('The Elbow Method showing the optimal k')
-    plt.savefig("plot_pictures/elbows/OptimalKMeans.png")
+    plt.savefig("plot_pictures/elbows/OptimalKMeansTSNE.png")
     plt.show()
 
 
@@ -25,5 +25,5 @@ def plotSilhouetteScores(kRange, scores):
     plt.xlabel('k')
     plt.ylabel('Silhouette Scores')
     plt.title('Silhouette scores showing the optimal k')
-    plt.savefig("plot_pictures/silhouettes/OptimalKMeans.png")
+    plt.savefig("plot_pictures/silhouettes/OptimalKMeansTSNE.png")
     plt.show()

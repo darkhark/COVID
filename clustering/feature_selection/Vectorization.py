@@ -32,21 +32,24 @@ def reduceDimensionalityWithTSNE(X_set, neighbors):
     return tsne.fit_transform(X_set)
 
 
-def reduceDimensionalityWithTF_IDF(cleansedDF):
+def reduceDimensionalityWithTF_IDF(cleansedDF, calculateMaxFeatures=True):
     """
     TF-IDF measures words based on their uniqueness. The maximum number of features will be equal to
     the maximum nymber of unique words present in an article.
 
+    :param calculateMaxFeatures: If true, the maximum number of features will be calculated
     :param cleansedDF: The cleaned Data Frame. Only the body_text column will be used.
     :return: Tf-idf-weighted document-term matrix.
     """
     print("Getting max unique body words count for maximum features...")
     body_text_values = cleansedDF["body_text"].values
-    uniqueBodyWordsCount = pd.Series()
-    uniqueBodyWordsCount["unique_body_words_count"] = cleansedDF['body_text'].apply(lambda x: len(set(str(x).split())))
-    max_unique_values = uniqueBodyWordsCount["unique_body_words_count"].max()
+    maxFeatures = 2 ** 13
+    if calculateMaxFeatures:
+        uniqueBodyWordsCount = pd.Series()
+        uniqueBodyWordsCount["unique_body_words_count"] = cleansedDF['body_text'].apply(lambda x: len(set(str(x).split())))
+        maxFeatures = uniqueBodyWordsCount["unique_body_words_count"].max()
     print("Reducing dimensionality using TF-IDF...")
-    vectorizer = TfidfVectorizer(max_features=max_unique_values)
+    vectorizer = TfidfVectorizer(max_features=maxFeatures)
     return vectorizer.fit_transform(body_text_values)
 
 
