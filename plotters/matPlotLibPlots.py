@@ -11,7 +11,7 @@ def plotElbowForKmeans(kRange, distortions, name):
     plt.xlabel('k')
     plt.ylabel('Distortion')
     plt.title('The Elbow Method showing the optimal k')
-    location = "plot_pictures/elbows/OptimalKMeans" + name + "TSNE.png"
+    location = "plot_pictures/elbows/OptimalKMeans" + name + ".png"
     plt.savefig(location)
     plt.show()
 
