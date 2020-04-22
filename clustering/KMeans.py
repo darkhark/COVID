@@ -45,3 +45,4 @@ def findOptimalKUsingSilhouette(X):
         labels = kmeans.labels_
         sil.append(silhouette_score(X, labels, metric='euclidean'))
     plotSilhouetteScores(kRange, sil)
+

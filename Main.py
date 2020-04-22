@@ -58,3 +58,9 @@ X = getTFidfToTNSEMatrix(covidDF)
 plotWithoutClusterSns(X, "plot_pictures/tsnePlot.png")
 findOptimalKUsingSilhouette(X)
 findOptimalKUsingElbow(X)
+
+X = getTFidfPCAMatrix(covidDF)
+plotWithoutClusterSns(X, "plot_pictures/pcaPlot.png")
+findOptimalKUsingSilhouette(X)
+findOptimalKUsingElbow(X)
+
