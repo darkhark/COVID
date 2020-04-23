@@ -1,11 +1,12 @@
-from clustering.KMeans import trainTestSplit, findOptimalKUsingElbow, findOptimalKUsingSilhouette
+from clustering.KMeans import trainTestSplit, findOptimalKUsingElbow, findOptimalKUsingSilhouette, getKMeansLabels
 from clustering.feature_selection.NGrams import runNGrams
 from clustering.feature_selection.Vectorization import getHashVectorizationMatrix, reduceDimensionalityWithTSNE, \
     reduceDimensionalityWithTF_IDF, reduceDimensionalityWithPCA
-from plotters.seabornPlots import plotWithoutClusterSns
+from plotters.matPlotLibPlots import plotWithoutClusterSns, plotWithClusters
 from preprocessing.DataCleanser import runDataCleanser
 from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
+import pickle
 
 
 def loadAndCleanInitialData():
@@ -47,20 +48,45 @@ def getTFidfPCAMatrix(df):
     return reduceDimensionalityWithPCA(matrix)
 
 
-# covidDF = loadAndCleanInitialData()
-# runQuickLoader(1000)
-covidDF = runCleansedDataLoader()
+def saveEmbeddedXAndPlots():
+    X = getTFidfToTNSEMatrix(covidDF)
+    pickle.dump(X, open("X.p", "wb"))
+    plotWithoutClusterSns(X, "plot_pictures/tsnePlot.png", "t-SNE Covid-19 Articles")
+    findOptimalKUsingSilhouette(X, "TSNE")
+    findOptimalKUsingElbow(X, "TSNE")
+    return X
+
+
+def saveXReduced():
+    x_reduced = getTFidfPCAMatrix(covidDF)
+    pickle.dump(x_reduced, open("xReduced.p", "wb"))
+    # plotWithoutClusterSns(reducedX, "plot_pictures/pcaPlot.png", "PCA Covid-19 Articles")
+    # findOptimalKUsingSilhouette(reducedX, "PCA")
+    # findOptimalKUsingElbow(reducedX, "PCA")
+    return x_reduced
+
+
+def savePredictedY(X_embedded, X_reduced, k):
+    predictedY = getKMeansLabels(X_reduced, k)
+    yPredName = "y_pred" + str(k) + ".p"
+    pickle.dump(predictedY, open(yPredName, "wb"))
+    plotWithClusters(X_embedded, predictedY, k)
+    return predictedY
+
+
+print("Loading dataframe...")
+covidDF = pickle.load(open("covidDF.p", "rb"))
 # Equivalent of quick loader for loading the csv
 # covidDF = covidDF[:][:1000]
-print("\n----------Starting Feature Selection---------\n")
 
-X = getTFidfToTNSEMatrix(covidDF)
-plotWithoutClusterSns(X, "plot_pictures/tsnePlot.png")
-findOptimalKUsingSilhouette(X, "TSNE")
-findOptimalKUsingElbow(X, "TSNE")
+print("Loading embedded X...")
+X = pickle.load(open("X.p", "rb"))
+print("Loading reduced X...")
+reducedX = pickle.load(open("xReduced.p", "rb"))
+for k in range(5, 11):
+    savePredictedY(X, reducedX, k)
 
-X = getTFidfPCAMatrix(covidDF)
-plotWithoutClusterSns(X, "plot_pictures/pcaPlot.png")
-findOptimalKUsingSilhouette(X, "PCA")
-findOptimalKUsingElbow(X, "PCA")
+for k in range(15, 26):
+    savePredictedY(X, reducedX, k)
 
+# covidDF['y'] = y_pred
