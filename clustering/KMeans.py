@@ -46,3 +46,8 @@ def findOptimalKUsingSilhouette(X, name):
         sil.append(silhouette_score(X, labels, metric='euclidean'))
     plotSilhouetteScores(kRange, sil, name)
 
+
+def getKMeansLabels(reducedX, k):
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    y_pred = kmeans.fit_predict(reducedX)
+    return y_pred
