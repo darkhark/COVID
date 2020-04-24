@@ -4,10 +4,12 @@ from clustering.feature_selection.Vectorization import getHashVectorizationMatri
     reduceDimensionalityWithTF_IDF, reduceDimensionalityWithPCA
 from metrics.SGDscores import getTrainTestSplitScores
 from plotters.matPlotLibPlots import plotWithoutClusterSns, plotWithClusters
-from preprocessing.DataCleanser import runDataCleanser
-from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader
+from preprocessing.DataCleanser import runDataCleanser, cleanDiseaseList
+from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader, getDiseaseData, \
+    getKeywordsList
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 import pickle
+
 from topic_modeling.LDAmodeling import getLDAModelsAndKeywords
 
 
@@ -93,22 +95,45 @@ def saveKeywords(keywords, vectorized_data):
     f.close()
 
 
-print("Loading dataframe...")
-covidDF = pickle.load(open("covidDF.p", "rb"))
+def countDiseaseWordsInKeywords(diseases, keywords):
+    k = 1
+
+    clusterMatches = {}
+    for cluster in keywords:
+        cluster = [word.strip() for word in cluster]
+        wordMatches = []
+        total = 0
+        for diseaseWord in diseases:
+            if diseaseWord in cluster:
+                wordMatches.append(diseaseWord)
+                total += 1
+        wordMatches.append(total)
+        clusterMatches[k] = wordMatches
+        k += 1
+    return clusterMatches
+
+
+# print("Loading dataframe...")
+# covidDF = pickle.load(open("covidDF.p", "rb"))
 # Equivalent of quick loader for loading the csv
 # covidDF = covidDF[:][:1000]
 
-print("Loading embedded X...")
-X = pickle.load(open("X.p", "rb"))
-print("Loading reduced X...")
-reducedX = pickle.load(open("xReduced.p", "rb"))
-y_pred = pickle.load(open("y_pred16.p", "rb"))
+# print("Loading embedded X...")
+# X = pickle.load(open("X.p", "rb"))
+# print("Loading reduced X...")
+# reducedX = pickle.load(open("xReduced.p", "rb"))
+# y_pred = pickle.load(open("y_pred16.p", "rb"))
 
-covidDF['y'] = y_pred
+# covidDF['y'] = y_pred
 
 # vectorizedData, keywords = getLDAModelsAndKeywords(covidDF)
 # saveKeywords(keywords, vectorizedData)
 # print(keywords[:10])
 
-getTrainTestSplitScores(reduceDimensionalityWithTF_IDF(covidDF), y_pred)
-
+# getTrainTestSplitScores(reduceDimensionalityWithTF_IDF(covidDF), y_pred)
+diseaseList = getDiseaseData()
+diseaseList = cleanDiseaseList(diseaseList)
+keywords = getKeywordsList()
+matches = countDiseaseWordsInKeywords(diseaseList, keywords)
+for cell in matches:
+    print(cell, ":", matches[cell])

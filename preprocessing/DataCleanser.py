@@ -175,3 +175,15 @@ def runDataCleanser(df_covid, saveToCSV=False):
         df.to_csv(path_or_buf="cleanedData/cleanedEnglishData.csv", index=False)
         print("Saved CSV to cleanedData/cleanedEnglishData.csv")
     return df
+
+
+def cleanDiseaseList(diseaseList):
+    brokenDownList = []
+    for value in diseaseList:
+        for word in value.split():
+            word = re.sub('[^a-zA-z0-9\s]', "", word)
+            word = word.replace("[", "").replace("]", "")
+            word = word.strip()
+            word = toLowercase(word)
+            brokenDownList.append(word)
+    return set(brokenDownList)

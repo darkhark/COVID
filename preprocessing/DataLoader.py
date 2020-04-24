@@ -1,6 +1,7 @@
 import pandas as pd
 import glob
 import json
+import csv
 
 
 class FileReader:
@@ -138,3 +139,15 @@ def runCleansedDataLoader():
     print("Reading in cleansed CSV...")
     # Converter needed to keep objects from becoming floats
     return pd.read_csv("cleanedData/cleanedEnglishData.csv", converters={i: str for i in range(0, 8)})
+
+
+def getDiseaseData():
+    with open("diseaseList.csv") as file:
+        reader = csv.reader(file)
+        return list(reader)[0]
+
+
+def getKeywordsList():
+    with open('topics.csv', 'r') as f:
+        reader = csv.reader(f)
+        return list(reader)
