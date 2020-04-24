@@ -2,11 +2,13 @@ from clustering.KMeans import trainTestSplit, findOptimalKUsingElbow, findOptima
 from clustering.feature_selection.NGrams import runNGrams
 from clustering.feature_selection.Vectorization import getHashVectorizationMatrix, reduceDimensionalityWithTSNE, \
     reduceDimensionalityWithTF_IDF, reduceDimensionalityWithPCA
+from metrics.SGDscores import getTrainTestSplitScores
 from plotters.matPlotLibPlots import plotWithoutClusterSns, plotWithClusters
 from preprocessing.DataCleanser import runDataCleanser
 from preprocessing.DataLoader import runFullDataLoader, runQuickLoader, runCleansedDataLoader
 from preprocessing.WordCounter import addAbstractAndBodyWordCountColumn
 import pickle
+from topic_modeling.LDAmodeling import getLDAModelsAndKeywords
 
 
 def loadAndCleanInitialData():
@@ -74,6 +76,23 @@ def savePredictedY(X_embedded, X_reduced, k):
     return predictedY
 
 
+def saveKeywords(keywords, vectorized_data):
+    f = open('topics.txt', 'w')
+
+    count = 0
+
+    for i in keywords:
+
+        if vectorized_data[count] is not None:
+            f.write(', '.join(i) + "\n")
+        else:
+            f.write("Not enough instances to be determined. \n")
+            f.write(', '.join(i) + "\n")
+        count += 1
+
+    f.close()
+
+
 print("Loading dataframe...")
 covidDF = pickle.load(open("covidDF.p", "rb"))
 # Equivalent of quick loader for loading the csv
@@ -83,10 +102,13 @@ print("Loading embedded X...")
 X = pickle.load(open("X.p", "rb"))
 print("Loading reduced X...")
 reducedX = pickle.load(open("xReduced.p", "rb"))
-for k in range(5, 11):
-    savePredictedY(X, reducedX, k)
+y_pred = pickle.load(open("y_pred16.p", "rb"))
 
-for k in range(15, 26):
-    savePredictedY(X, reducedX, k)
+covidDF['y'] = y_pred
 
-# covidDF['y'] = y_pred
+# vectorizedData, keywords = getLDAModelsAndKeywords(covidDF)
+# saveKeywords(keywords, vectorizedData)
+# print(keywords[:10])
+
+getTrainTestSplitScores(reduceDimensionalityWithTF_IDF(covidDF), y_pred)
+
